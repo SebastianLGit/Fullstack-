@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recept & Matplanering</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <nav>
+        <a href="index.html">Hem</a>
+    <a href="login.html">Logga in</a>
+    <a href="admin.html" id="adminBtn" style="display: none;">Admin</a>
+    <a href="#" onclick="logout()" id="logoutBtn" style="display: none;">Logga ut</a>
+    </nav>
+
+    <!-- 🚀 Hemsidan med recept -->
+    <section id="home">
+        <h1>Recept</h1>
+        <div id="recipe-list"></div>
+    </section>
+
+    <!-- 🔑 Inloggningssida -->
+    <section id="login" style="display: none;">
+        <h2>Admin Login</h2>
+        <input type="text" id="username" placeholder="Användarnamn">
+        <input type="password" id="password" placeholder="Lösenord">
+        <button onclick="login()">Logga in</button>
+        <p id="loginError" style="color: red;"></p>
+    </section>
+
+    <!-- 🛠️ Adminpanel -->
+    <section id="admin" style="display: none;">
+        <h2>Adminpanel</h2>
+        <input type="text" id="newRecipeTitle" placeholder="Recepttitel">
+        <button onclick="addRecipe()">Lägg till recept</button>
+        <div id="admin-recipe-list"></div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
