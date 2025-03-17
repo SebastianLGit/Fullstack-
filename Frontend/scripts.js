@@ -13,27 +13,52 @@ async function fetchRecipes() {
 }
 fetchRecipes();
 
-// 🔑 Simulerad inloggning (ersätt med riktig backend-check)
-function login() {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+// 🔑 Inloggning (Backend-autentisering)
+async function login() {
+    const användarnamn = document.getElementById("username").value;
+    const lösenord = document.getElementById("password").value;
 
-    if (username === "admin" && password === "password123") { 
-        sessionStorage.setItem("loggedIn", "true");
-        document.getElementById("adminBtn").style.display = "inline";
-        document.getElementById("logoutBtn").style.display = "inline";
-        showPage('admin');
-    } else {
-        document.getElementById("loginError").textContent = "Fel användarnamn eller lösenord!";
+    try {
+        const response = await fetch(`${API_URL}/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ användarnamn, lösenord })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            localStorage.setItem("token", data.token);
+            window.location.href = "admin.html"; // Navigera till admin-sidan efter inloggning
+        } else {
+            document.getElementById("loginError").textContent = data.message;
+        }
+    } catch (error) {
+        console.error("Fel vid inloggning:", error);
     }
 }
 
-// 🔒 Logga ut
+// 🔐 Kontrollera om användaren är inloggad
+function checkLogin() {
+    const token = localStorage.getItem("token");
+    if (token) {
+        document.getElementById("adminBtn").style.display = "inline";
+        document.getElementById("logoutBtn").style.display = "inline";
+    }
+}
+
+// 🚪 Logga ut
 function logout() {
-    sessionStorage.removeItem("loggedIn");
-    document.getElementById("adminBtn").style.display = "none";
-    document.getElementById("logoutBtn").style.display = "none";
-    showPage('home');
+    localStorage.removeItem("token");
+    window.location.href = "index.html"; // Navigera till startsidan efter utloggning
+}
+
+checkLogin(); // Kontrollera vid sidladdning om användaren är inloggad
+
+// 🌍 Växla mellan sidor (home, login, admin)
+function showPage(page) {
+    document.getElementById("home").style.display = page === "home" ? "block" : "none";
+    document.getElementById("login").style.display = page === "login" ? "block" : "none";
+    document.getElementById("admin").style.display = page === "admin" && localStorage.getItem("token") ? "block" : "none";
 }
 
 // 🛠️ Hantera admin-recept (simulerad databas)
@@ -61,15 +86,5 @@ function deleteRecipe(index) {
     renderAdminRecipes();
 }
 
-// 🌍 Växla mellan sidor
-function showPage(page) {
-    document.getElementById("home").style.display = page === "home" ? "block" : "none";
-    document.getElementById("login").style.display = page === "login" ? "block" : "none";
-    document.getElementById("admin").style.display = page === "admin" && sessionStorage.getItem("loggedIn") ? "block" : "none";
-}
-
-// 🚀 Kontrollera om admin redan är inloggad
-if (sessionStorage.getItem("loggedIn")) {
-    document.getElementById("adminBtn").style.display = "inline";
-    document.getElementById("logoutBtn").style.display = "inline";
-}
+// 🚀 Hämta alla recept
+fetchRecipes();
