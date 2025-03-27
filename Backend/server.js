@@ -12,7 +12,7 @@ const db = mysql.createConnection({
     host: "localhost",
     user: "root", // Ändra om du har annat användarnamn
     password: "", // Lägg in ditt lösenord om du har ett
-    database: "Fullstack"
+    database: "fullstack"
 });
 
 db.connect(err => {
