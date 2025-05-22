@@ -2,8 +2,24 @@ require("dotenv").config();
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
+const path = require('path');
+
 
 const app = express();
+app.set('view engine', 'ejs');
+
+app.set('views', path.join(__dirname, 'views'));
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+/*app.get('/', (req, res) => {
+    res.render('index'); // This will render views/index.ejs
+});*/
+
+app.get('/', async function(req, res){
+    res.render('index', {'greeting':""});
+});
+
 app.use(cors());
 app.use(express.json()); // Gör så att vi kan ta emot JSON
 
@@ -23,13 +39,10 @@ db.connect(err => {
     }
 });
 
-app.get('/', async function(req, res){
-    res.send("🚀 hello world")
-});
 
 // 🚀 API: Hämta alla recept
 app.get("/api/recipe", (req, res) => {
-    db.query("SELECT * FROM recept", (err, results) => {
+    db.query("SELECT * FROM recipe", (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(results);
     });

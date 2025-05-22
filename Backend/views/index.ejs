@@ -9,12 +9,11 @@
 <body>
 
     <nav>
-        <a href="index.html">Hem</a>
-    <a href="login.html">Logga in</a>
+        <a href="index.ejs">Hem</a>
+    <a href="login.ejs">Logga in</a>
     <a href="admin.html" id="adminBtn" style="display: none;">Admin</a>
     <a href="#" onclick="logout()" id="logoutBtn" style="display: none;">Logga ut</a>
     </nav>
-
     <!-- 🚀 Hemsidan med recept -->
     <section id="home">
         <h1>Recept</h1>
@@ -34,7 +33,7 @@
     <section id="admin" style="display: none;">
         <h2>Adminpanel</h2>
         <input type="text" id="newRecipeTitle" placeholder="Recepttitel">
-        <button onclick="addRecipe()">Lägg till recept female</button>
+        <button onclick="addRecipe()">Lägg till recept</button>
         <div id="admin-recipe-list"></div>
     </section>
 
