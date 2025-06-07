@@ -1,22 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Logga in</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
     <nav>
-        <a href="index.html">Hem</a>
-    <a href="login.html">Logga in</a>
-    <a href="admin.html" id="adminBtn" style="display: none;">Admin</a>
-    <a href="#" onclick="logout()" id="logoutBtn" style="display: none;">Logga ut</a>
+        <a href="/">Hem</a>
     </nav>
-
-    <section id="home">
-        <h1>Login</h1>
-        <div id="login-logout"></div>
+    <section id="login">
+        <h2>Admin Login</h2>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Användarnamn" required />
+            <input type="password" id="password" placeholder="Lösenord" required />
+            <button type="submit">Logga in</button>
+        </form>
+        <p id="loginError" style="color: red;"></p>
     </section>
+    <script src="scripts.js"></script>
 </body>
 </html>

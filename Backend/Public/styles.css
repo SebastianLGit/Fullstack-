@@ -28,7 +28,8 @@ nav button {
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-input, button {
+input,
+button {
   margin: 10px;
   padding: 10px;
 }/*# sourceMappingURL=styles.css.map */
