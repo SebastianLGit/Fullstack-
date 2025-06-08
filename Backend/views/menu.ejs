@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manage Recipes</title>
+  <style>
+    .recipe-card {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+    }
+    .actions {
+      margin-top: 10px;
+    }
+    .actions button {
+      margin-right: 5px;
+    }
+    .ingredient-row {
+      margin-bottom: 5px;
+    }
+    .ingredient-row input {
+      margin-right: 5px;
+    }
+  </style>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/menu">Menu</a>
+    <% if (loggedIn) { %>
+      <a href="/logout">Logout</a>
+    <% } else { %>
+      <a href="/login">Login</a>
+    <% } %>
+  </nav>
+
+  <h1>Manage Recipes</h1>
+
+  <% if (recipes.length === 0) { %>
+    <p>No recipes available yet.</p>
+  <% } else { %>
+    <% recipes.forEach(recipe => { %>
+      <div class="recipe-card">
+        <h2><%= recipe.dish %></h2>
+        <p><%= recipe.description %></p>
+
+        <% if (loggedIn) { %>
+          <div class="actions">
+            <button onclick="editRecipe(<%= recipe.id %>)">Edit</button>
+            <button onclick="deleteRecipe(<%= recipe.id %>)">Delete</button>
+          </div>
+        <% } %>
+      </div>
+    <% }); %>
+  <% } %>
+
+  <% if (loggedIn) { %>
+    <h2>Add New Recipe</h2>
+    <form id="addRecipeForm">
+      <input type="text" id="newDish" placeholder="Dish" required />
+      <textarea id="newDescription" placeholder="Description" required></textarea>
+
+      <h3>Ingredients</h3>
+      <div id="ingredientsContainer">
+        <div class="ingredient-row">
+          <input type="text" class="ingredient-name" placeholder="Ingredient name" required />
+          <input type="text" class="ingredient-amount" placeholder="Amount" required />
+        </div>
+      </div>
+      <button type="button" id="addIngredientBtn">Add Ingredient</button>
+      <br /><br />
+      <button type="submit">Add</button>
+    </form>
+  <% } %>
+
+  <script>
+    function editRecipe(id) {
+      const newDish = prompt("Enter new dish:");
+      if (newDish === null) return;
+
+      const newDescription = prompt("Enter new description:");
+      if (newDescription === null) return;
+
+      const categori_id = 1; // You can make this dynamic later if you want
+
+      fetch(`/api/recipe/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ dish: newDish, description: newDescription, categori_id })
+      }).then(res => {
+        if (res.ok) {
+          alert("Recipe updated!");
+          location.reload();
+        } else {
+          res.json().then(data => alert(data.message || "Failed to update the recipe."));
+        }
+      }).catch(() => alert("Error updating the recipe."));
+    }
+
+    async function deleteRecipe(id) {
+      if (!confirm("Are you sure you want to delete this recipe?")) return;
+
+      try {
+        const res = await fetch(`/api/recipe/${id}`, {
+          method: "DELETE",
+          credentials: "include"
+        });
+        if (res.ok) {
+          alert("Recipe deleted!");
+          location.reload();
+        } else {
+          const data = await res.json();
+          alert(data.message || "Failed to delete the recipe.");
+        }
+      } catch {
+        alert("Error deleting the recipe.");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const addIngredientBtn = document.getElementById("addIngredientBtn");
+      const ingredientsContainer = document.getElementById("ingredientsContainer");
+
+      addIngredientBtn.addEventListener("click", () => {
+        const div = document.createElement("div");
+        div.classList.add("ingredient-row");
+        div.innerHTML = `
+          <input type="text" class="ingredient-name" placeholder="Ingredient name" required />
+          <input type="text" class="ingredient-amount" placeholder="Amount" required />
+          <button type="button" class="removeIngredientBtn">Remove</button>
+        `;
+        ingredientsContainer.appendChild(div);
+
+        div.querySelector(".removeIngredientBtn").addEventListener("click", () => {
+          div.remove();
+        });
+      });
+
+      const form = document.getElementById("addRecipeForm");
+      if (!form) return;
+
+      form.addEventListener("submit", async e => {
+        e.preventDefault();
+
+        const dish = document.getElementById("newDish").value.trim();
+        const description = document.getElementById("newDescription").value.trim();
+        const categori_id = 1; // static, can be dynamic later
+
+        if (!dish || !description) {
+          alert("Please fill in both dish and description.");
+          return;
+        }
+
+        // Collect ingredients
+        const ingredientRows = document.querySelectorAll(".ingredient-row");
+        const ingredients = [];
+
+        for (const row of ingredientRows) {
+          const name = row.querySelector(".ingredient-name").value.trim();
+          const amount = row.querySelector(".ingredient-amount").value.trim();
+
+          if (!name || !amount) {
+            alert("Please fill in all ingredient names and amounts.");
+            return;
+          }
+
+          ingredients.push({ name, amount });
+        }
+
+        try {
+          const res = await fetch("/api/recipe", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ dish, description, categori_id, ingredients })
+          });
+
+          if (res.ok) {
+            alert("Recipe added!");
+            location.reload();
+          } else {
+            const data = await res.json();
+            alert(data.message || "Failed to add the recipe.");
+          }
+        } catch {
+          alert("Error adding the recipe.");
+        }
+      });
+    });
+  </script>
+
+  <script src="/scripts.js"></script>
+</body>
+</html>

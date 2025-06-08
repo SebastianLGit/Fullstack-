@@ -1,27 +1,65 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Recept & Matplanering</title>
+  <title>Recipes & Meal Planning</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
 
-  <!-- Navigering -->
   <nav>
-    <a href="/">Hem</a>
-    <a href="/login" id="loginBtn">Logga in</a>
-    <a href="/admin" id="adminBtn" style="display: none;">Admin</a>
-    <a href="#" onclick="logout()" id="logoutBtn" style="display: none;">Logga ut</a>
+    <a href="/">Home</a>
+    <a href="/menu">Menu</a>
+    <% if (loggedIn) { %>
+      <a href="/logout">Logout</a>
+    <% } else { %>
+      <a href="/login">Login</a>
+    <% } %>
   </nav>
 
-  <!-- Startsida -->
   <section id="home">
-    <h1>Recept</h1>
-    <div id="recipe-list"></div>
+    <h1>Recipes</h1>
+    <div id="gallery-container">
+      <button id="prev-btn">&#10094;</button>
+      <img id="gallery-image" src="" alt="Image Gallery" />
+      <button id="next-btn">&#10095;</button>
+    </div>
+    
+    <style>
+      #gallery-container {
+        position: relative;
+        width: 800px;
+        max-width: 90vw;
+        margin: 20px auto;
+        text-align: center;
+      }
+      #gallery-image {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+      }
+      #prev-btn, #next-btn {
+        position: absolute;
+        top: 50%;
+        background-color: rgba(0,0,0,0.5);
+        color: white;
+        border: none;
+        padding: 12px;
+        cursor: pointer;
+        font-size: 24px;
+        border-radius: 50%;
+        user-select: none;
+        transform: translateY(-50%);
+      }
+      #prev-btn { left: 10px; }
+      #next-btn { right: 10px; }
+      #prev-btn:hover, #next-btn:hover {
+        background-color: rgba(0,0,0,0.8);
+      }
+    </style>    
   </section>
 
-  <script src="/script.js"></script>
+  <script src="/scripts.js"></script>
 </body>
 </html>
